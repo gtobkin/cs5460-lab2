@@ -1,0 +1,9 @@
+Greg Tobkin (greg.tobkin@gmail.com)
+Cornell Tech, Fall 2013
+CS 5460 - Parallel and Distributed Computing
+Lab 2 (Task Queues)
+* Part 1: Template for master-worker computation
+* Part 2: Using the Template
+* Part 3: Select your own problem
+
+This lab uses the Message-Passing Interface to create an API for master-worker computation. We'll create and implement the API, use it to compute an example problem (prime factorization), and then create and compute a task of our own.
