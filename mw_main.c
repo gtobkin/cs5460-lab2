@@ -65,6 +65,23 @@ int result (int sz, mw_result_t *res) {
 	return(1);
 }
 
+// Process (on a worker) a single unit of work
+// Return NULL if there is no result, non-NULL otherwise
+// work: pointer to mw_work_t to be processed
+// User-defined.
+mw_result_t * compute (mw_work_t *work) {
+	// Vapidly simple process for our first test case
+	// Just add together n 1's
+	int sum = 0;
+	int i;
+	for (i = 0; i < (*work).quantity; i++) {
+		sum++;
+	}
+	mw_result_t res = { sum };
+	mw_result_t *ptr = &res;
+	return (ptr);
+}
+
 int main (int argc, char **argv) {
 	
 	/*
