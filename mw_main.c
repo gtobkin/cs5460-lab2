@@ -18,14 +18,13 @@ struct userdef_result_t {
 // argc/argv: from int main(); command-line argument count, identities
 // numWorkers: number of (non-master) threads in this parallel computation
 // (may let the user define work units more intelligently)
-mw_work_t** createWorkList (int argc, char **argv, int numWorkers) {
+mw_work_t ** createWorkList (int argc, char **argv, int numWorkers) {
 	// Nonspecific createWorkList code follows
 	// Do not change for different master-worker tasks
 	if (argc == 1) {
 		exit(-1); // no parameter(s), so we can't describe the task
 	}
 	mw_work_t ** workList;
-	
 	// And now the task-specific portion. User-supplied.
 	int n = atoi(argv[1]); // assumes valid input; no parsing
 	// +1 for the null terminator
@@ -96,10 +95,35 @@ int main (int argc, char **argv) {
 		n 1's together. BUT IN PARALLEL!
 	*/
 
+	MPI_Init(&argc, &argv);
+
+	// Create an MPI_Datatype for the work unit struct...
+	const int workItemCount = 1;
+	int workBlocklengths[1] = {1};
+	MPI_Datatype workTypes[1] = {MPI_INT};
+	MPI_Datatype * workType;
+	MPI_Aint workOffsets[1];
+	workOffsets[0] = offsetof(mw_work_t, quantity);
+	MPI_Type_create_struct(workItemCount, workBlocklengths,
+		workOffsets, workTypes, workType);
+	MPI_Type_commit(workType);
+
+	// ... and the results unit struct
+	const int resultsItemCount = 1;
+	int resultsBlocklengths[1] = {1};
+	MPI_Datatype resultsTypes[1] = {MPI_INT};
+	MPI_Datatype * resultType;
+	MPI_Aint resultsOffsets[1];
+	resultsOffsets[0] = offsetof(mw_result_t, subSum);
+	MPI_Type_create_struct(resultsItemCount, resultsBlocklengths,
+		resultsOffsets, resultsTypes, workType);
+	MPI_Type_commit(workType);
+
+	// ... and the results unit struct
 	struct mw_api_spec f;
 	
 	f.create = &createWorkList;
-
+	
 	exit(0);
 }
 

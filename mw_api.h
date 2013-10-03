@@ -18,7 +18,7 @@ struct mw_api_spec {
 
    	// Size in bytes of the work structure and result structure,
 	// needed to send/receive messages.
-	int work_sz, res_sz; 
+	MPI_Datatype *workType, *resultType; 
 };
  	// Run master-worker
 void MW_Run (int argc, char **argv, struct mw_api_spec *f);

@@ -1,25 +1,25 @@
 #include <stdio.h>
 #include <mpi.h>
 #include <stdlib.h>
+#include "mw_api.h"
 
-int main (int argc, char **argv)
-{
+void MW_Run (int argc, char **argv, struct mw_api_spec *f) {
 	int size, myid;
   	MPI_Init (&argc, &argv);
 	MPI_Comm_size (MPI_COMM_WORLD, &size);	
 	MPI_Comm_rank (MPI_COMM_WORLD, &myid);
 
 	if (myid == 0) {
-		doMasterStuff();
+		doMasterStuff(argc, argv, size);
 	} else {
-		doWorkerStuff();
+		doWorkerStuff(argc, argv, size, myid);
 	}
 
 	MPI_Finalize ();
 	exit(0);
 }
 
-int doMasterStuff() {
+int doMasterStuff(int argc, char **argv, int size) {
 	
 	/*
 		The plan:
@@ -31,7 +31,18 @@ int doMasterStuff() {
 		3a) If # unsent work < # workers, request sender terminate
 		3b) Else send work unit (and increment # sent)
 	*/
+
+	int numWorkers = size-1;
+
+	// 1) Process input into a list of work units
 	
+	mw_work_t ** workList;
+	workList = createWorkList(argc, argv, numWorkers);
+	
+	// 2) Send one unit to min(# work, # workers);
+	//   track # sent/received
+	int sent = 0, recvd = 0;
+
 	exit(0);
 
 	/* Crufty code; retained temp. for syntax reference
@@ -52,7 +63,7 @@ int doMasterStuff() {
 	*/
 }
 
-int doWorkerStuff() {
+int doWorkerStuff(int argc, char **argv, int size, int workerID) {
 
 	/*
 		The plan:
