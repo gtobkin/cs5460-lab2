@@ -6,7 +6,7 @@ typedef struct userdef_result_t mw_result_t;
 struct mw_api_spec {
 	// create work: return a NULL-terminated list of work.
 	// Return NULL if it fails. */
-	mw_work_t **(*create) (int argc, char **argv); 
+	mw_work_t **(*create) (int argc, char **argv, int numWorkers); 
 	
 	// Process result. Input is a collection of results, of size sz.
 	// Returns 1 on success, 0 on failure.
