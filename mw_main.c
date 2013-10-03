@@ -9,7 +9,7 @@ struct userdef_work_t {
 };
 
 struct userdef_result_t {
-	int sum;
+	int subSum;
 };
 
 // Take a task description from command line arguments
@@ -46,6 +46,23 @@ mw_work_t** createWorkList (int argc, char **argv, int numWorkers) {
 	// and finally add the terminator
 	workList[numWorkers] = NULL;
 	return(workList);
+}
+
+// Process our collection of results (by master, post-worker phase).
+// Returns 1 on success, 0 otherwise.
+// sz: # of mw_result_t's in collection
+// res: pointer to first mw_result_t
+// User-defined.
+int result (int sz, mw_result_t *res) {
+	int sum = 0;
+	int i;
+	mw_result_t * ptr = res;
+	for (i = 0; i < sz; i++) {
+		sum += (*ptr).subSum;
+		ptr += sizeof(mw_result_t*);
+	}
+	printf("Sum is: %d\n", sum);
+	return(1);
 }
 
 int main (int argc, char **argv) {
